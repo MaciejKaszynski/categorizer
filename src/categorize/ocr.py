@@ -6,6 +6,8 @@ from pathlib import Path
 
 class OCR(Pipe):
 
+    @Pipe.precondition(lambda d: bool(d.images_file_path),
+                       "OCR needs images_file_path")
     def forward(self, data: Data) -> Data:
         """
 
