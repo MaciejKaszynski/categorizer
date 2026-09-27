@@ -1,40 +1,27 @@
-
-from dataclasses import dataclass, field
+from typing import List, Optional
+from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
-from pypdf import PdfReader, PdfWriter
-from pathlib import Path
 
- 
-@dataclass
-class PDFMetadata:
 
-    title: Optional[str] = None
-    """Document title"""
+class PdfMetadata(BaseModel):
+    author: str
+    producer: str
+    title: str
+    subject: str
+    keywords: List[str]
+    creation_date: Optional[str]
+    mod_date: str = datetime.now().strftime("D\072%Y%m%d")
 
-    author: Optional[str] = None
-    """Author or sender name/company"""
+    creator: str
 
-    subject: Optional[str] = None
-    """Category / document type"""
-
-    keywords: Optional[list[str]] = field(default_factory=list)
-    """Tags"""
-
-    creator: Optional[str] = None
-    """Application that created the original doc"""
-
-    producer: Optional[str] = None
-    """PDF producer/converter application"""
-
-    creation_date: Optional[datetime] = None
-    """Date on the document"""
-
-    mod_date: Optional[datetime] = None
-    """Last modified date"""
-
- 
-    def write_to_pdf(self, input_path: Path, output_path: Path) -> None:
-        """Open a PDF, apply all metadata, and save to output_path."""
-        pass
- 
+    def to_pdfdata(self):
+        return {
+            "/Author": self.author,
+            "/Producer": self.producer,
+            "/Title": self.title,
+            "/Subject": self.subject,
+            "/Keywords": ",".join(self.keywords),
+            "/CreationDate": self.creation_date,
+            "/ModDate": self.mod_date,
+            "/Creator": self.creator,
+        }
