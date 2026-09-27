@@ -10,6 +10,9 @@ logger = logging.getLogger("PDFCreator")
 
 class PDFCreator(Pipe):
 
+    def __init__(self, args):
+        self.__out_dir = args.output_dir
+
     @Pipe.precondition(lambda d: len(d.images) != 0, "No images to make PDF from")
     def forward(self, data: Data) -> Data:
 
@@ -29,7 +32,7 @@ class PDFCreator(Pipe):
             logger.debug("Writing metadata!")
             writer.add_metadata(data.pdf_metadata.to_pdfdata())
 
-        with (data.output_dir / "out.pdf").open('wb') as f:
+        with (self.__out_dir / "out.pdf").open('wb') as f:
             writer.write(f)
 
         return data

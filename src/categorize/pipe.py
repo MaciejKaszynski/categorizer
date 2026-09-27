@@ -1,21 +1,15 @@
 from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Any, Tuple, Optional, List
+from argparse import Namespace
 from dataclasses import dataclass, field
-from typing import Callable, Dict
+from pathlib import Path
 from PIL.Image import Image
+from typing import Any, Tuple, Optional, List, Callable, Dict
 
 from categorize.pdf_metadata import PdfMetadata
 
 
 @dataclass
 class Data:
-    output_dir: Path
-
-    debug_dir: Optional[Path] = None
-    """The path to the debug artifacts.
-    """
-
     images: List[Image] = field(default_factory=list)
     """A list of images of the scanned document.
     """
@@ -24,12 +18,6 @@ class Data:
     """Text from the document.
 
     @note: This is mapped such that index of `images_file_path` match here.
-    """
-
-    llm_model: str = "None"
-    """Model to use
-
-    @note "None" skips the LLM categorization pipe.
     """
 
     pdf_metadata: Optional[PdfMetadata] = None
@@ -75,6 +63,10 @@ class Pipe(ABC):
             return _innerer
 
         return _inner
+
+    @abstractmethod
+    def __init__(self, ars: Namespace):
+        raise NotImplementedError("Abstract Method")
 
     @abstractmethod
     def forward(self, data: Data) -> Data:

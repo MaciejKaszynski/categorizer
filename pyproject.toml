@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "maciej" }]
-dependencies = ["pypdf", "pytesseract", "pillow", "ollama", "pyinsane2", "pydantic"]
+dependencies = ["pypdf", "pytesseract", "pillow", "ollama", "python-sane", "pydantic"]
 
 [project.optional-dependencies]
 dev = ["pytest"]

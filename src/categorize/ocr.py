@@ -1,17 +1,20 @@
-from categorize.pipe import Pipe, Data
+from argparse import Namespace
+from pathlib import Path
 from PIL import Image
 from pytesseract import image_to_string
 from sys import argv
-from pathlib import Path
-
-
 import logging
+
+from categorize.pipe import Pipe, Data
 
 
 logger = logging.getLogger("OCR")
 
 
 class OCR(Pipe):
+
+    def __init__(self, args: Namespace):
+        self.__debug_dir = args.debug_dir
 
     @Pipe.precondition(lambda d: bool(d.images), "OCR needs images_file_path")
     def forward(self, data: Data) -> Data:
@@ -33,8 +36,8 @@ class OCR(Pipe):
             current_page_text = image_to_string(image, lang="pol")
             data.ocr_text.append(current_page_text)
 
-            if data.debug_dir:
-                with (data.debug_dir / f"{i}.ocr.txt").open('w') as f:
+            if self.__debug_dir:
+                with (self.__debug_dir / f"{i}.ocr.txt").open('w') as f:
                     f.write(current_page_text)
 
         logger.info("OCR done")

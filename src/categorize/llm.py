@@ -31,13 +31,13 @@ If a field cannot be determined, use null.
 
 
 class LLM(Pipe):
-    def __init__(self):
+    def __init__(self, args):
         self.message = [
             {"role": "system", "content": SYSTEM_PROMPT},
         ]
         self.client = Client()
+        self.__model = args.model
 
-    @Pipe.skip_if(lambda d: d.llm_model == "None")
     @Pipe.precondition(lambda d: bool(d.ocr_text), "LLM needs ocr_text")
     def forward(self, data: Data) -> Data:
         logger.info("Running LLM")
@@ -50,7 +50,7 @@ class LLM(Pipe):
         )
 
         logger.info("Asking Jarvis")
-        result = self.client.chat(data.llm_model, messages=current_message)
+        result = self.client.chat(self.__model, messages=current_message)
         logger.info("Got Response")
 
         logger.debug(f": {result.message.content}")
@@ -84,6 +84,6 @@ class LLM(Pipe):
                         "content": "That was not valid JSON. Return only a raw JSON object, no markdown, no backticks, no explanation.",
                     }
                 )
-            result = self.client.chat(data.llm_model, messages=current_message)
+            result = self.client.chat(self.__model, messages=current_message)
 
         return data

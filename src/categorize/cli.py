@@ -6,12 +6,11 @@ import sys
 from PIL import Image
 
 from . import __version__
-from categorize.scanner import Scanner
 from categorize.pipeline import Pipeline
 from categorize.pipe import Data
 import logging
 from pathlib import Path
-
+from typing import Optional
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -29,6 +28,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--use-image", type=Path)
     parser.add_argument("--model", type=str)
+    parser.add_argument("--scanner", type=str)
     parser.add_argument("--list-scanners", action="store_true")
     return parser
 
@@ -44,16 +44,12 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
 
-    data = Data(Path().resolve())
+    data = Data()
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
         logging.debug("!!!Debug logging enabled!!!")
-        data.debug_dir = Path("/tmp/categorize").resolve()
-        data.debug_dir.mkdir(exist_ok=True)
     else:
         logging.basicConfig(level=logging.INFO)
-
-    logging.info(f"Outputting to {data.output_dir}")
 
     setup_logs()
 
@@ -61,10 +57,10 @@ def main() -> int:
         logging.info(f"Using {args.use_image}")
         data.images.append(Image.open(args.use_image.resolve()))
 
-    if args.model:
-        data.llm_model = args.model
-
-    pipeline = Pipeline()
+    args.output_dir = Path().cwd()
+    args.debug_dir = Path("/tmp/cat_debug")
+    args.debug_dir.mkdir(exist_ok=True)
+    pipeline = Pipeline(args)
     pipeline.run(data)
 
     return 0
