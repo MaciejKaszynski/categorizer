@@ -19,10 +19,10 @@ no explanation, no markdown, no backticks.
 Extract these fields:
 - producer: (Can be a company name, or null)
 - author: same as producer
-- title: this should be something like {producer} - {subject} - {creation_date}
+- title: this should be something like {creation_date} - {producer} - {subject}
 - subject: The type of document (e.g. invoice, contract, letter, receipt, bank_statement, other)
 - keywords: (list of 3-5 relevant tags)
-- creation_date: (DYYYMMDD, or null)
+- creation_date: (YYYY-MM-DD, or null)
 - reference_number: (invoice no, contract id, or null)
 - creator: same as producer
 

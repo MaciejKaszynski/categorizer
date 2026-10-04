@@ -19,7 +19,7 @@ class PDFCreator(Pipe):
         writer = PdfWriter()
 
         for i, image in enumerate(data.images):
-            pdf_bytes = image_to_pdf_or_hocr(image, extension="pdf", lang="pol")
+            pdf_bytes = image_to_pdf_or_hocr(image, extension="pdf", lang="eng")
 
             assert isinstance(pdf_bytes, bytes)
 
@@ -32,7 +32,7 @@ class PDFCreator(Pipe):
             logger.debug("Writing metadata!")
             writer.add_metadata(data.pdf_metadata.to_pdfdata())
 
-        with (self.__out_dir / "out.pdf").open('wb') as f:
+        with (self.__out_dir / f"{data.pdf_metadata.title}.pdf").open('wb') as f:
             writer.write(f)
 
         return data

@@ -24,7 +24,12 @@ class LinuxScanner(iScanner, Pipe):
         SETTINGS = {
                 "mode": "color",
                 "depth": 8,
-                "resolution": 600
+                "resolution": 600,
+                # A4 in mm; top-left must be set before bottom-right
+                "tl_x": 0,
+                "tl_y": 0,
+                "br_x": 210,
+                "br_y": 297,
         }
 
         def try_set(data: dict[str, str]) -> None:
